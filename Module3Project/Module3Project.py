@@ -124,7 +124,8 @@ def calculate_total(num_scoops, num_toppings):
     topping_cost = num_toppings * prices["topping"] # math calculation to get total amount of flavors
     return scoop_cost + topping_cost  # add total amount of order.
 
-def print_receipt(chosen_cone, num_scoops, chosen_flavors, chosen_toppings, formatted_time, formatted_date):
+def print_receipt(chosen_cone, num_scoops,
+                   chosen_flavors, chosen_toppings, formatted_time, formatted_date):
     # Prints a nice receipt for the customer
     print()
     print("=====================================")
@@ -133,7 +134,7 @@ def print_receipt(chosen_cone, num_scoops, chosen_flavors, chosen_toppings, form
     print(f"\nYou selection: {chosen_cone}")
 
     for i in range(num_scoops):
-        print(f"Scoop {i+1}: {chosen_flavors[i].title()}") # title is to captalize first letter.
+        print(f"Scoop {i+1}: {chosen_flavors[i].title()}")  # Capitalize first letter
 
     if chosen_toppings:
         print("\nToppings:")
@@ -141,18 +142,28 @@ def print_receipt(chosen_cone, num_scoops, chosen_flavors, chosen_toppings, form
         for topping in chosen_toppings:
             print(f" - {topping.title()}")
 
-    # Print the total
-    # or total = calculate_total(scoop_cost + topping_cost)
+    # Calculate total
     total = calculate_total(num_scoops, len(chosen_toppings))
-    print(f"\nTotal: ${total:.2f}")
 
-    print("\nCurrent time ",formatted_time,"," ,formatted_date)
+    # Apply discount if total is $10 or more
+    if total >= 10:
+        discount_amount = total * 0.1  # 10% discount
+        total -= discount_amount  # Apply discount
+        print(f"\nTotal: ${total + discount_amount:.2f}")  # Original total
+        print(f"Discount Applied: -${discount_amount:.2f}")  # Discount
+        print(f"Grand Total: ${total:.2f}")  # Final amount
+    else:
+        print(f"\nGrand Total: ${total:.2f}")  # Print only Grand Total if < $10
+
+    print("\nCurrent time ", formatted_time, ",", formatted_date)
     print("=====================================")
     print()
 
     # Save order to file 
     with open("daily_orders.txt", "a") as file:
-        file.write(f"\n{num_scoops} scoops - ${total:.2f}, Ordered at {formatted_time}, {formatted_date}")
+        file.write(f"\n{num_scoops} scoops - ${total:.2f}, Ordered at {formatted_time}, {formatted_date}") 
+    
+    return total  # Return the final total after discount
 
 # Main function - updated test fucnction
 def main():
